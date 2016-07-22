@@ -1,9 +1,12 @@
 package packtpub.freelearning;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import packtpub.selenium.driver.DriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import packtpub.selenium.page.FreeLearningPage;
+import packtpub.selenium.webdriver.WebDriverFactory;
 
 /**
  *
@@ -19,12 +22,12 @@ public class FreeEBookIT{
      * PhantomJS
      * Spring injection
      */
+    private static final int TIMEOUT_IN_SECONDS = 5;
 
     private final String usernamePropertyName = "account.mail";
     private final String passwordPropertyName = "account.password";
 
-    private DriverManager driverManager;
-
+    private WebDriver driver;
     private FreeLearningPage underTest;
 
     /**
@@ -32,7 +35,17 @@ public class FreeEBookIT{
      * */
     @Before
     public void setUp() {
-        driverManager = new DriverManager();
+        driver = WebDriverFactory.getWebdriver(WebDriverFactory.SupportedBrowser.CHROME);
+        WebDriverWait wait = new WebDriverWait(driver, TIMEOUT_IN_SECONDS);
+        underTest = new FreeLearningPage(driver, wait);
+    }
+
+    /**
+     * Tear down for the IT.
+     * */
+    @After
+    public void tearDown() {
+        driver.close();
     }
 
     /**
@@ -43,7 +56,7 @@ public class FreeEBookIT{
      * */
     @Test
     public void requestFreeEBook() {
-        driverManager.loadPageAndWait(underTest);
+        underTest.loadPageAndWait();
         underTest.logIn(System.getProperty(usernamePropertyName), System.getProperty(passwordPropertyName));
     }
 }

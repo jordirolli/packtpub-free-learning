@@ -39,4 +39,11 @@ public class LoginForm {
         passwordInput.sendKeys(password);
         submitButton.click();
     }
+
+    /**
+     * @return true if the log in form is visible.
+     * */
+    public boolean isVisible() {
+        return emailInput.isDisplayed();
+    }
 }

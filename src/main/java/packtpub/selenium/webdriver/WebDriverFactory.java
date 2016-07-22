@@ -1,22 +1,27 @@
-package packtpub.selenium.util;
+package packtpub.selenium.webdriver;
 
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.util.Map;
+import java.security.Permission;
 
 /**
- * Created by jordi.roldan on 8/07/2016.
+ * Factory to build the selenium web driver based on the underlying OS the app is running from.
+ *
+ * More information regarding the
+ * <a href="https://en.wikipedia.org/wiki/Factory_%28object-oriented_programming%29">Factory Pattern</a>
+ *
+ * @author jordi.roldan
  */
 public final class WebDriverFactory {
 
-    private static final String BIN_BASE_PATH = "bin/webdriver/";
+    private static final String BIN_BASE_PATH = "/webdriver/";
+    private static final String CHROME_WEB_DRIVER_BIN_FILE_NAME = "chromedriver";
+    private static final String CHROME_WEB_DRIVER_PROPERTY_NAME = "webdriver.chrome.driver";
 
     private WebDriverFactory() { }
 
@@ -101,20 +106,18 @@ public final class WebDriverFactory {
         switch (browser) {
             case CHROME:
                 driverPathWriter.append(SupportedOS.getCurrentOS().getPath() + "/");
-                driverPathWriter.append("chromedriver");
-                String webDriverBinaryPath = driverPathWriter.toString();
-                // TODO Ensure that the file has execute permissions
-                /*
-                File driver = new File(WebDriverFactory.class.getResource(webDriverBinaryPath).getFile());
+                driverPathWriter.append(CHROME_WEB_DRIVER_BIN_FILE_NAME);
+                String webDriverRelativePath = driverPathWriter.toString();
+                String webDriverAbsolutePath = WebDriverFactory.class.getResource(webDriverRelativePath).getFile();
+                //Permission webDriverExecPermission = new java.io.FilePermission(webDriverAbsolutePath, "execute");
+                //webDriverExecPermission
+                File driver = new File(webDriverAbsolutePath);
                 if (!driver.canExecute()) {
                     driver.setExecutable(true);
                 }
-                */
-                System.setProperty("webdriver.chrome.driver", webDriverBinaryPath);
-                Map<String, Object> chromeOptions = Maps.newHashMap();
-                chromeOptions.put("binary", webDriverBinaryPath);
+                System.setProperty(CHROME_WEB_DRIVER_PROPERTY_NAME, webDriverAbsolutePath);
                 DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-                capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+                capabilities.setCapability(CHROME_WEB_DRIVER_PROPERTY_NAME, webDriverAbsolutePath);
                 return new ChromeDriver(capabilities);
             default:
                 return null;
