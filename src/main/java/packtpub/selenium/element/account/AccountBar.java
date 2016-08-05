@@ -6,6 +6,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import packtpub.selenium.webdriver.AbstractWebDriverComponent;
 
 /**
@@ -14,6 +16,8 @@ import packtpub.selenium.webdriver.AbstractWebDriverComponent;
  * @author jordi.roldan
  */
 public class AccountBar extends AbstractWebDriverComponent {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AccountBar.class);
 
     private WebElement logInRegisterDiv;
 
@@ -43,6 +47,7 @@ public class AccountBar extends AbstractWebDriverComponent {
     public void logIn(String mail, String password) {
         if (!isUserLoggedIn()) {
             if (logInRegisterDiv.isDisplayed()) {
+                LOG.debug("Attempting to log in with user account: " + mail);
                 ((JavascriptExecutor) getWebDriver()).executeScript("arguments[0].click();",
                         logInRegisterDiv.findElement(By.className("login-popup")));
                 getWebDriverWait().until(new ExpectedCondition<Boolean>() {
@@ -51,6 +56,7 @@ public class AccountBar extends AbstractWebDriverComponent {
                     }
                 });
                 logInForm.login(mail, password);
+                LOG.debug("User successfully logged in.");
             }
         }
     }

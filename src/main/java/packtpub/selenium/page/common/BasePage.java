@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import packtpub.selenium.webdriver.AbstractWebDriverComponent;
 
 /**
@@ -15,6 +17,8 @@ import packtpub.selenium.webdriver.AbstractWebDriverComponent;
  * @author jordi.roldan
  */
 public abstract class BasePage extends AbstractWebDriverComponent {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BasePage.class);
 
     private String url;
 
@@ -34,6 +38,7 @@ public abstract class BasePage extends AbstractWebDriverComponent {
         super(webDriver, webDriverWait);
         this.url = url;
         this.title = title;
+        LOG.debug("New page object for " + url);
     }
 
     /**
@@ -96,6 +101,7 @@ public abstract class BasePage extends AbstractWebDriverComponent {
                 return webDriver.getTitle().equals(title);
             }
         });
+        LOG.debug("Page successfully loaded.");
         webElement = getWebDriver().findElement(By.tagName("html"));
         initStaticElements(webElement);
     }

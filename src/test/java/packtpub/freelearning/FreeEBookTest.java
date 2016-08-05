@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author jordi.roldan
  */
-public class FreeEBookIT{
+public class FreeEBookTest {
 
     /* TODO
      * Ensure that the webdriver is properly loaded.
