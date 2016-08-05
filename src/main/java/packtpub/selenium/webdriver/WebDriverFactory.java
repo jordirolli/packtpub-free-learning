@@ -7,7 +7,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.security.Permission;
 
 /**
  * Factory to build the selenium web driver based on the underlying OS the app is running from.

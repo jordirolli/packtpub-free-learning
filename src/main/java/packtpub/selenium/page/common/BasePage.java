@@ -2,6 +2,7 @@ package packtpub.selenium.page.common;
 
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -19,6 +20,8 @@ public abstract class BasePage extends AbstractWebDriverComponent {
 
     private String title;
 
+    private WebElement webElement;
+
     /**
      * Constructor
      *
@@ -34,11 +37,11 @@ public abstract class BasePage extends AbstractWebDriverComponent {
     }
 
     /**
-     * Initialize all the web elements of the page.
+     * Initialize static web elements of the page.
      *
      * @param container web element
      * */
-    public abstract void init(WebElement container);
+    public abstract void initStaticElements(WebElement container);
 
     /** @return url to load this page */
     public String getUrl() {
@@ -50,17 +53,50 @@ public abstract class BasePage extends AbstractWebDriverComponent {
         return title;
     }
 
+    /** @return web element representing DOM structure for current page */
+    public WebElement getWebElement() {
+        return webElement;
+    }
+
     /**
      * Loads the page in the web browser.
      * Notice that it performs an active wait and it does not return till the page is fully loaded on the web browser.
      * */
     public void loadPageAndWait() {
         getWebDriver().get(url);
+        waitUntilLoaded();
+    }
+
+    /**
+     * Restores the web elements of the page after the page does refresh.
+     * Notice that web elements initialised before the DOM refreshes become stale.
+     * */
+    public void refreshPage() {
+        // This action triggers a page reload so we have to re-initialise the web elements as the previous
+        // ones become stale
+        getWebDriverWait().until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                try {
+                    getWebElement().findElement(By.id("DOES_NOT_MATTER"));
+                    return false;
+                } catch (StaleElementReferenceException exception) {
+                    return true;
+                }
+            }
+        });
+        waitUntilLoaded();
+    }
+
+    /**
+     * Wait until the page is loaded in the web browser. Notice that it performs an active wait.
+     * */
+    public void waitUntilLoaded() {
         getWebDriverWait().until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver webDriver) {
                 return webDriver.getTitle().equals(title);
             }
         });
-        init(getWebDriver().findElement(By.tagName("html")));
+        webElement = getWebDriver().findElement(By.tagName("html"));
+        initStaticElements(webElement);
     }
 }

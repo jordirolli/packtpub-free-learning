@@ -34,7 +34,7 @@ public class LoginForm {
      * @param username of the account.
      * @param password of the account.
      * */
-    public void loginAndWait(String username, String password) {
+    public void login(String username, String password) {
         emailInput.sendKeys(username);
         passwordInput.sendKeys(password);
         submitButton.click();

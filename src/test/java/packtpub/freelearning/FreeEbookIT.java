@@ -6,8 +6,10 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import packtpub.selenium.page.FreeLearningPage;
+import packtpub.selenium.page.account.MyEBooksPage;
 import packtpub.selenium.webdriver.WebDriverFactory;
 
+import static org.junit.Assert.assertTrue;
 /**
  *
  * Tests to execute on <a href="https://www.packtpub.com/packt/offers/free-learning">packt publishing free learning</a>
@@ -58,5 +60,7 @@ public class FreeEBookIT{
     public void requestFreeEBook() {
         underTest.loadPageAndWait();
         underTest.logIn(System.getProperty(usernamePropertyName), System.getProperty(passwordPropertyName));
+        MyEBooksPage myEBooksPage = underTest.claimFreeEBook();
+        assertTrue(myEBooksPage.getMyEBooks().size() > 0);
     }
 }

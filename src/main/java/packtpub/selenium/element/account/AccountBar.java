@@ -13,7 +13,7 @@ import packtpub.selenium.webdriver.AbstractWebDriverComponent;
  *
  * @author jordi.roldan
  */
-public class AccountBar extends AbstractWebDriverComponent{
+public class AccountBar extends AbstractWebDriverComponent {
 
     private WebElement logInRegisterDiv;
 
@@ -43,14 +43,14 @@ public class AccountBar extends AbstractWebDriverComponent{
     public void logIn(String mail, String password) {
         if (!isUserLoggedIn()) {
             if (logInRegisterDiv.isDisplayed()) {
-                ((JavascriptExecutor) getWebDriver()).executeScript("arguments[0].click();" ,
+                ((JavascriptExecutor) getWebDriver()).executeScript("arguments[0].click();",
                         logInRegisterDiv.findElement(By.className("login-popup")));
                 getWebDriverWait().until(new ExpectedCondition<Boolean>() {
                     public Boolean apply(WebDriver webDriver) {
                         return logInForm.isVisible();
                     }
                 });
-                logInForm.loginAndWait(mail, password);
+                logInForm.login(mail, password);
             }
         }
     }
